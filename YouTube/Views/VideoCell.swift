@@ -81,15 +81,3 @@ final class VideoCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 }
-
-extension UIView {
-    func addConstraints(withVisualFormat format: String, views: UIView...) {
-        var viewsDictionary = [String : UIView]()
-        for (index, view) in views.enumerated() {
-            view.translatesAutoresizingMaskIntoConstraints = false
-            viewsDictionary.updateValue(view, forKey: "v\(index)")
-        }
-        
-        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: format, options: .directionMask, metrics: nil, views: viewsDictionary))
-    }
-}
