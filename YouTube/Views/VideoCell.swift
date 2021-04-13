@@ -34,8 +34,8 @@ final class VideoCell: BaseCell {
         }
     }
     
-    private let thumbnailImageView: UIImageView = {
-        let imageView = UIImageView()
+    private let thumbnailImageView: ImageView = {
+        let imageView = ImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         return imageView
@@ -43,12 +43,12 @@ final class VideoCell: BaseCell {
     
     private let separatorView: UIView = {
         let view = UIView()
-        view.backgroundColor = .systemGray6
+        view.backgroundColor = .fromRGBValue(red: 230, green: 230, blue: 230)
         return view
     }()
     
-    private let userProfileImageView: UIImageView = {
-        let imageView = UIImageView()
+    private let userProfileImageView: ImageView = {
+        let imageView = ImageView()
         imageView.layer.cornerRadius = 22
         imageView.layer.masksToBounds = true
         imageView.contentMode = .scaleAspectFill
@@ -59,14 +59,18 @@ final class VideoCell: BaseCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 2
+        label.backgroundColor = .white
+        label.textColor = .black
         return label
     }()
     private var titleLabelHeightConstraint: NSLayoutConstraint?
     
     private let subtitleTextView: UITextView = {
         let textView = UITextView()
+        textView.isEditable = false
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.textColor = .lightGray
+        textView.backgroundColor = .white
         textView.textContainerInset = UIEdgeInsets(top: 0, left: -4, bottom: 0, right: 0)
         return textView
     }()
