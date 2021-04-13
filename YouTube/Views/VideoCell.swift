@@ -11,23 +11,31 @@ final class VideoCell: BaseCell {
     var video: Video? {
         didSet {
             // Configure NumberOfViews String
+            if let video = video {
+                if let title = video.title {
+                    titleLabel.text = title
+                    // Configure TitleLabel Height
+                    let size = CGSize(width: frame.width - 32 - 44 - 8, height: 1000)
+                    let estimatedRect = NSString(string: title).boundingRect(with: size, options: NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin), attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14)], context: nil)
+                    titleLabelHeightConstraint?.constant = estimatedRect.height > 20 ? 44 : 20
+                }
+                if let thumbnailImageName = video.thumbnailImageName {
+                    thumbnailImageView.setImage(using: thumbnailImageName)
+                }
+            }
+            if let channelImageName = video?.channel?.profileImageName {
+                userProfileImageView.setImage(using: channelImageName)
+            }
             let formatter = NumberFormatter()
             formatter.numberStyle = .decimal
-            guard let title = video?.title, let thumbnailImageName = video?.thumbnailImageName, let channelImageName = video?.channel?.profileImageName, let channelName = video?.channel?.name, let numberOfViews = video?.numberOfViews, let stringForNumberOfViews = formatter.string(from: numberOfViews) else { return }
-            titleLabel.text = title
-            thumbnailImageView.image = UIImage(named: thumbnailImageName)
-            userProfileImageView.image = UIImage(named: channelImageName)
-            subtitleTextView.text = "\(channelName) • \(stringForNumberOfViews) • 2 years ago"
-            // Configure TitleLabel Height
-            let size = CGSize(width: frame.width - 32 - 44 - 8, height: 1000)
-            let estimatedRect = NSString(string: title).boundingRect(with: size, options: NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin), attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14)], context: nil)
-            titleLabelHeightConstraint?.constant = estimatedRect.height > 20 ? 44 : 20
+            if let channelName = video?.channel?.name, let numberOfViews = video?.numberOfViews, let stringForNumberOfViews = formatter.string(from: numberOfViews) {
+                subtitleTextView.text = "\(channelName) • \(stringForNumberOfViews) • 2 years ago"
+            }
         }
     }
     
     private let thumbnailImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "taylor_swift_blank_space")
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         return imageView
@@ -41,16 +49,15 @@ final class VideoCell: BaseCell {
     
     private let userProfileImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "taylor_swift_profile")
         imageView.layer.cornerRadius = 22
         imageView.layer.masksToBounds = true
+        imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Taylor Swift - Blank Space"
         label.numberOfLines = 2
         return label
     }()
@@ -59,7 +66,6 @@ final class VideoCell: BaseCell {
     private let subtitleTextView: UITextView = {
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.text = "TaylorSwiftVEVO • 1,604,684,607 views • 2 years ago"
         textView.textColor = .lightGray
         textView.textContainerInset = UIEdgeInsets(top: 0, left: -4, bottom: 0, right: 0)
         return textView

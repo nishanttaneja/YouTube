@@ -8,27 +8,47 @@
 import UIKit
 
 final class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
-    private let videos: [Video] = {
-        let kanyeChannel = Channel()
-        kanyeChannel.name = "KanyeIsTheBestChannel"
-        kanyeChannel.profileImageName = "kanye_profile"
-        
-        let blankSpaceVideo = Video()
-        blankSpaceVideo.title = "Taylor Swift - Blank Space"
-        blankSpaceVideo.thumbnailImageName = "taylor_swift_blank_space"
-        blankSpaceVideo.channel = kanyeChannel
-        blankSpaceVideo.numberOfViews = 23932843093
-        
-        let badBloodVideo = Video()
-        badBloodVideo.title = "Taylor Swift - Bad Blood featuring Kendrick Lamar"
-        badBloodVideo.thumbnailImageName = "taylor_swift_bad_blood"
-        badBloodVideo.channel = kanyeChannel
-        badBloodVideo.numberOfViews = 57989654934
-        
-        return [blankSpaceVideo, badBloodVideo]
-    }()
+    private var videos = [Video]()
     
     //MARK:- View Lifecycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        configureNavigationController()
+        configureCollectionView()
+        setupMenuBar()
+        fetchVideos()
+    }
+    
+    private func fetchVideos() {
+        guard let url = URL(string: "https://s3-us-west-2.amazonaws.com/youtubeassets/home.json") else { return }
+        URLSession.shared.dataTask(with: url) { [weak self] (data, response, error) in
+            guard let self = self else { return }
+            if error != nil { print(error!.localizedDescription); return }
+            guard data != nil else { return }
+            do {
+                let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers)
+                self.videos = []
+                for dictionary in json as! [[String : Any]] {
+                    let video = Video()
+                    video.title = dictionary["title"] as? String
+                    video.thumbnailImageName = dictionary["thumbnail_image_name"] as? String
+                    video.numberOfViews = dictionary["number_of_views"] as? NSNumber
+                    if let channelJSON = dictionary["channel"] as? [String : Any] {
+                        let channel = Channel()
+                        channel.name = channelJSON["name"] as? String
+                        channel.profileImageName = channelJSON["profile_image_name"] as? String
+                        video.channel = channel
+                    }
+                    self.videos.append(video)
+                }
+            }
+            catch { print(error.localizedDescription) }
+            DispatchQueue.main.async { [weak self] in
+                self?.collectionView.reloadData()
+            }
+        }.resume()
+    }
+    
     private func configureNavigationController() {
         navigationController?.navigationBar.barTintColor = .red
         navigationController?.navigationBar.isTranslucent = false
@@ -41,13 +61,9 @@ final class HomeController: UICollectionViewController, UICollectionViewDelegate
         ]
     }
     
-    @objc private func handleMore() {
-        print(#function)
-    }
+    @objc private func handleMore() {  }
     
-    @objc private func handleSearch() {
-        print(#function)
-    }
+    @objc private func handleSearch() {  }
     
     private func configureCollectionView() {
         collectionView.backgroundColor = .white
@@ -66,13 +82,6 @@ final class HomeController: UICollectionViewController, UICollectionViewDelegate
         view.addSubview(menuBar)
         view.addConstraints(withVisualFormat: "H:|[v0]|", views: menuBar)
         view.addConstraints(withVisualFormat: "V:|[v0(50)]", views: menuBar)
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        configureNavigationController()
-        configureCollectionView()
-        setupMenuBar()
     }
     
     //MARK:- CollectionView

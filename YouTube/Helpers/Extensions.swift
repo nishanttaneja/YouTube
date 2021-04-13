@@ -23,3 +23,15 @@ extension UIColor {
         .init(red: red/255, green: green/255, blue: blue/255, alpha: 1)
     }
 }
+
+extension UIImageView {
+    func setImage(using urlString: String) {
+        guard let url = URL(string: urlString) else { return }
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if error != nil { print(error!.localizedDescription); return }
+            DispatchQueue.main.async { [weak self] in
+                self?.image = UIImage(data: data!)
+            }
+        }.resume()
+    }
+}
