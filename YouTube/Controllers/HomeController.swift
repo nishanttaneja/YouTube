@@ -61,7 +61,11 @@ final class HomeController: UICollectionViewController, UICollectionViewDelegate
         ]
     }
     
-    @objc private func handleMore() {  }
+    let settingsLauncher = SettingsLauncher()
+    
+    @objc private func handleMore() {
+        settingsLauncher.show()
+    }
     
     @objc private func handleSearch() {  }
     
