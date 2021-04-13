@@ -44,7 +44,7 @@ extension MenuBar: UICollectionViewDataSource, UICollectionViewDelegate, UIColle
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath) as! MenuCell
-        cell.imageView.image = UIImage(named: imageNames[indexPath.item])?.withRenderingMode(.alwaysTemplate)
+        cell.imageView.image = UIImage(named: imageNames[indexPath.item])?.withRenderingMode(.alwaysOriginal)
         return cell
     }
     
