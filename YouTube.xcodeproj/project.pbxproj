@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B41401E026256C0600F3B3BB /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41401DF26256C0600F3B3BB /* MenuBar.swift */; };
+		B41401E326256F5900F3B3BB /* BaseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41401E226256F5900F3B3BB /* BaseCell.swift */; };
+		B41401E72625726600F3B3BB /* MenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41401E62625726600F3B3BB /* MenuCell.swift */; };
 		B438A75F2620E136001135EA /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B438A75E2620E136001135EA /* README.md */; };
 		B4A5DC942624D2D700D88B93 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4A5DC932624D2D700D88B93 /* Extensions.swift */; };
 		B4E222FA2620CA5900EF707E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E222F92620CA5900EF707E /* AppDelegate.swift */; };
@@ -18,6 +21,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B41401DF26256C0600F3B3BB /* MenuBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBar.swift; sourceTree = "<group>"; };
+		B41401E226256F5900F3B3BB /* BaseCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCell.swift; sourceTree = "<group>"; };
+		B41401E62625726600F3B3BB /* MenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCell.swift; sourceTree = "<group>"; };
 		B438A75E2620E136001135EA /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.markdown; };
 		B4A5DC932624D2D700D88B93 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		B4E222F62620CA5900EF707E /* YouTube.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YouTube.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -52,7 +58,10 @@
 		B4A5DC912624D2C700D88B93 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				B41401E226256F5900F3B3BB /* BaseCell.swift */,
 				B4E223142620CC8500EF707E /* VideoCell.swift */,
+				B41401E62625726600F3B3BB /* MenuCell.swift */,
+				B41401DF26256C0600F3B3BB /* MenuBar.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -169,8 +178,11 @@
 			files = (
 				B4A5DC942624D2D700D88B93 /* Extensions.swift in Sources */,
 				B4E222FA2620CA5900EF707E /* AppDelegate.swift in Sources */,
+				B41401E026256C0600F3B3BB /* MenuBar.swift in Sources */,
 				B4E223152620CC8500EF707E /* VideoCell.swift in Sources */,
+				B41401E326256F5900F3B3BB /* BaseCell.swift in Sources */,
 				B4E222FC2620CA5900EF707E /* SceneDelegate.swift in Sources */,
+				B41401E72625726600F3B3BB /* MenuCell.swift in Sources */,
 				B4E223122620CC2100EF707E /* HomeController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

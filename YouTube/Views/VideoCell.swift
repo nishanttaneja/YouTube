@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class VideoCell: UICollectionViewCell {
+final class VideoCell: BaseCell {
     private let thumbnailImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "taylor_swift_blank_space")
@@ -46,12 +46,8 @@ final class VideoCell: UICollectionViewCell {
         return textView
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupViews()
-    }
-    
-    private func setupViews() {
+    override func configureCell() {
+        super.configureCell()
         addSubview(thumbnailImageView)
         addSubview(separatorView)
         addSubview(userProfileImageView)
@@ -75,9 +71,5 @@ final class VideoCell: UICollectionViewCell {
             NSLayoutConstraint(item: titleLabel, attribute: .height, relatedBy: .equal, toItem: titleLabel, attribute: .height, multiplier: 0, constant: 20),
             NSLayoutConstraint(item: subtitleTextView, attribute: .height, relatedBy: .equal, toItem: subtitleTextView, attribute: .height, multiplier: 0, constant: 30)
         ])
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }
