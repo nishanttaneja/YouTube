@@ -10,7 +10,7 @@ import UIKit
 final class SettingCell: BaseCell {
     var setting: Setting? {
         didSet {
-            titleLabel.text = setting?.name
+            titleLabel.text = setting?.name.rawValue
             if let imageName = setting?.imageName {
                 iconImageView.image = UIImage(named: imageName)?.withRenderingMode(.alwaysTemplate)
             }

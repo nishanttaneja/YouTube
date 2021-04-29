@@ -122,7 +122,7 @@ extension HomeController {
         }
         let settingController = UIViewController()
         settingController.view.backgroundColor = .white
-        settingController.navigationItem.title = setting.name
+        settingController.navigationItem.title = setting.name.rawValue
         navigationController?.pushViewController(settingController, animated: true)
     }
 }

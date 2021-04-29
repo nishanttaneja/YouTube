@@ -19,12 +19,12 @@ class SettingsLauncher: NSObject {
     private let cellId = "cellId"
     private let cellHeight: CGFloat = 50
     let settings: [Setting] = [
-        Setting(name: "Settings", imageName: "settings"),
-        Setting(name: "Terms & privacy policy", imageName: "privacy"),
-        Setting(name: "Send Feedback", imageName: "feedback"),
-        Setting(name: "Help", imageName: "help"),
-        Setting(name: "Switch Account", imageName: "switch_account"),
-        Setting(name: "Cancel", imageName: "cancel")
+        Setting(name: .settings, imageName: "settings"),
+        Setting(name: .termsAndPrivacy, imageName: "privacy"),
+        Setting(name: .feedback, imageName: "feedback"),
+        Setting(name: .help, imageName: "help"),
+        Setting(name: .switchAccount, imageName: "switch_account"),
+        Setting(name: .cancel, imageName: "cancel")
     ]
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
@@ -63,7 +63,7 @@ class SettingsLauncher: NSObject {
         } completion: { [weak self] (success) in
             self?.backgroundView.removeFromSuperview()
             self?.collectionView.removeFromSuperview()
-            if setting.name != "" && setting.name != "Cancel" {
+            if setting.name != .cancel {
                 self?.homeViewController?.showController(forSetting: setting)
             }
         }
