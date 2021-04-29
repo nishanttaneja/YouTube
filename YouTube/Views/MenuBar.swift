@@ -20,6 +20,8 @@ final class MenuBar: UIView {
     
     private let imageNames: [String] = ["home", "trending", "subscriptions", "account"]
     
+    private var bottomBarLeftAnchorConstraint: NSLayoutConstraint?
+    
     private func setupeCollectionView() {
         addSubview(collectionView)
         addConstraints(withVisualFormat: "H:|[v0]|", views: collectionView)
@@ -30,6 +32,7 @@ final class MenuBar: UIView {
         super.init(frame: frame)
         setupeCollectionView()
         collectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: true, scrollPosition: .init())
+        setupBottomBar()
     }
     
     required init?(coder: NSCoder) {
@@ -54,5 +57,31 @@ extension MenuBar: UICollectionViewDataSource, UICollectionViewDelegate, UIColle
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        bottomBarLeftAnchorConstraint?.constant = CGFloat(indexPath.item) * frame.width / 4
+        UIView.animate(withDuration: 0.75, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut) {
+            self.layoutIfNeeded()
+        } completion: { _ in }
+    }
+}
+
+//MARK:- BottomBar
+extension MenuBar {
+    func setupBottomBar() {
+        let bottomBar = UIView()
+        bottomBar.backgroundColor = .white
+        bottomBar.layer.cornerRadius = 2
+        bottomBar.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        bottomBar.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(bottomBar)
+        bottomBarLeftAnchorConstraint = bottomBar.leftAnchor.constraint(equalTo: leftAnchor)
+        bottomBarLeftAnchorConstraint?.isActive = true
+        NSLayoutConstraint.activate([
+            bottomBar.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0),
+            bottomBar.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 1/4),
+            bottomBar.heightAnchor.constraint(equalToConstant: 4)
+        ])
     }
 }
