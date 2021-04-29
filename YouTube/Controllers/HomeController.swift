@@ -83,14 +83,20 @@ final class HomeController: UICollectionViewController, UICollectionViewDelegate
     
     private let menuBar: MenuBar = {
         let menuBar = MenuBar()
-        menuBar.backgroundColor = .blue
         return menuBar
     }()
     
     private func setupMenuBar() {
+        navigationController?.hidesBarsOnSwipe = true
+        let redView = UIView()
+        redView.backgroundColor = .red
+        view.addSubview(redView)
         view.addSubview(menuBar)
+        view.addConstraints(withVisualFormat: "H:|[v0]|", views: redView)
+        view.addConstraints(withVisualFormat: "V:|[v0(50)]", views: redView)
         view.addConstraints(withVisualFormat: "H:|[v0]|", views: menuBar)
-        view.addConstraints(withVisualFormat: "V:|[v0(50)]", views: menuBar)
+        view.addConstraints(withVisualFormat: "V:[v0(50)]", views: menuBar)
+        menuBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
     }
     
     //MARK:- CollectionView
