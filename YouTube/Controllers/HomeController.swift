@@ -8,6 +8,8 @@
 import UIKit
 
 final class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+    private let cellIdentifier = "cellId"
+    
     private var videos = [Video]()
     
     //MARK:- View Lifecycle
@@ -75,14 +77,19 @@ final class HomeController: UICollectionViewController, UICollectionViewDelegate
     }()
     
     private func configureCollectionView() {
+        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            layout.scrollDirection = .horizontal
+        }
+        collectionView.isPagingEnabled = true
         collectionView.backgroundColor = .white
-        collectionView.register(VideoCell.self, forCellWithReuseIdentifier: "cellId")
+        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellIdentifier)
         collectionView.contentInset = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
         collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
     }
     
-    private let menuBar: MenuBar = {
+    private lazy var menuBar: MenuBar = {
         let menuBar = MenuBar()
+        menuBar.homeController = self
         return menuBar
     }()
     
@@ -101,22 +108,42 @@ final class HomeController: UICollectionViewController, UICollectionViewDelegate
     
     //MARK:- CollectionView
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        videos.count
+        4
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath) as! VideoCell
-        cell.video = videos[indexPath.item]
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath)
+        let colors: [UIColor] = [.blue, .green, .red, .yellow]
+//        cell.video = videos[indexPath.item]
+        cell.backgroundColor = colors[indexPath.item]
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let height = (view.frame.width - 32) * 9/16
-        return CGSize(width: view.frame.width, height: height + 16 + 88)
+//        let height = (view.frame.width - 32) * 9/16
+//        return CGSize(width: view.frame.width, height: height + 16 + 88)
+        return CGSize(width: view.frame.width, height: view.frame.height)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         0
+    }
+    
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        menuBar.bottomBarLeftAnchorConstraint?.constant = scrollView.contentOffset.x / 4
+    }
+    
+    override func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        let indexPath = IndexPath(item: Int(targetContentOffset.pointee.x/view.frame.width), section: 0)
+        menuBar.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+    }
+}
+
+extension HomeController {
+    func scrollToIndex(_ index: Int) {
+        collectionView.isPagingEnabled = false
+        collectionView.scrollToItem(at: IndexPath(item: index, section: 0), at: .centeredHorizontally, animated: true)
+        collectionView.isPagingEnabled = true
     }
 }
 

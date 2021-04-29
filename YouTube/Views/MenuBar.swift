@@ -8,7 +8,7 @@
 import UIKit
 
 final class MenuBar: UIView {
-    private lazy var collectionView: UICollectionView = {
+    lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: frame, collectionViewLayout: layout)
         collectionView.backgroundColor = .red
@@ -20,7 +20,8 @@ final class MenuBar: UIView {
     
     private let imageNames: [String] = ["home", "trending", "subscriptions", "account"]
     
-    private var bottomBarLeftAnchorConstraint: NSLayoutConstraint?
+    var bottomBarLeftAnchorConstraint: NSLayoutConstraint?
+    var homeController: HomeController?
     
     private func setupeCollectionView() {
         addSubview(collectionView)
@@ -60,10 +61,7 @@ extension MenuBar: UICollectionViewDataSource, UICollectionViewDelegate, UIColle
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        bottomBarLeftAnchorConstraint?.constant = CGFloat(indexPath.item) * frame.width / 4
-        UIView.animate(withDuration: 0.75, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut) {
-            self.layoutIfNeeded()
-        } completion: { _ in }
+        homeController?.scrollToIndex(indexPath.item)
     }
 }
 
