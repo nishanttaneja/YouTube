@@ -12,7 +12,7 @@ class SettingsLauncher: NSObject {
         let view = UIView()
         view.backgroundColor = .init(white: 0, alpha: 0.5)
         view.alpha = 0
-        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismiss)))
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleDismiss)))
         return view
     }()
     
@@ -35,6 +35,8 @@ class SettingsLauncher: NSObject {
         return collectionView
     }()
     
+    var homeViewController: HomeController?
+    
     func show() {
         if let window = UIApplication.shared.windows.filter({ $0.isKeyWindow }).first {
             window.addSubview(backgroundView)
@@ -52,7 +54,7 @@ class SettingsLauncher: NSObject {
         }
     }
     
-    @objc func dismiss() {
+    @objc func handleDismiss(withSetting setting: Setting) {
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut) { [weak self] in
             self?.backgroundView.alpha = 0
             if let window = UIApplication.shared.windows.filter({ $0.isKeyWindow }).first {
@@ -61,11 +63,15 @@ class SettingsLauncher: NSObject {
         } completion: { [weak self] (success) in
             self?.backgroundView.removeFromSuperview()
             self?.collectionView.removeFromSuperview()
+            if setting.name != "" && setting.name != "Cancel" {
+                self?.homeViewController?.showController(forSetting: setting)
+            }
         }
     }
 }
 
 extension SettingsLauncher: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+    // DataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         settings.count
     }
@@ -76,11 +82,18 @@ extension SettingsLauncher: UICollectionViewDataSource, UICollectionViewDelegate
         return cell
     }
     
+    // DelegateFlowLayout
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         CGSize(width: collectionView.frame.width, height: cellHeight)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         0
+    }
+    
+    //Delegate
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let setting = settings[indexPath.item]
+        handleDismiss(withSetting: setting)
     }
 }

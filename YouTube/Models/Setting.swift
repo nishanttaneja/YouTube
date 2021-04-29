@@ -7,7 +7,7 @@
 
 import UIKit
 
-class Setting {
+class Setting: NSObject {
     let name: String
     let imageName: String
     

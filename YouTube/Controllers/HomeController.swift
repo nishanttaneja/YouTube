@@ -53,21 +53,26 @@ final class HomeController: UICollectionViewController, UICollectionViewDelegate
         navigationController?.navigationBar.barTintColor = .red
         navigationController?.navigationBar.isTranslucent = false
         navigationController?.navigationBar.barStyle = .black
+        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor : UIColor.white]
+        navigationController?.navigationBar.tintColor = .white
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Home", style: .done, target: nil, action: nil)
-        navigationItem.leftBarButtonItem?.tintColor = .white
         navigationItem.rightBarButtonItems = [
             UIBarButtonItem(image: UIImage(named: "nav_more_icon")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleMore)),
             UIBarButtonItem(image: UIImage(named: "search_icon")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleSearch))
         ]
     }
     
-    let settingsLauncher = SettingsLauncher()
-    
     @objc private func handleMore() {
         settingsLauncher.show()
     }
     
     @objc private func handleSearch() {  }
+    
+    private lazy var settingsLauncher: SettingsLauncher = {
+        let launcher = SettingsLauncher()
+        launcher.homeViewController = self
+        return launcher
+    }()
     
     private func configureCollectionView() {
         collectionView.backgroundColor = .white
@@ -106,5 +111,18 @@ final class HomeController: UICollectionViewController, UICollectionViewDelegate
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         0
+    }
+}
+
+//MARK:- SettingsLauncher
+extension HomeController {
+    func showController(forSetting setting: Setting) {
+        guard type(of: setting) != UITapGestureRecognizer.self else {
+            return
+        }
+        let settingController = UIViewController()
+        settingController.view.backgroundColor = .white
+        settingController.navigationItem.title = setting.name
+        navigationController?.pushViewController(settingController, animated: true)
     }
 }
