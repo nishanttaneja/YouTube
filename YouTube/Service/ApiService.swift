@@ -10,8 +10,10 @@ import Foundation
 class ApiService: NSObject {
     static let sharedInstance = ApiService()
     
-    func fetchVideos(completion: @escaping ([Video]) -> Void) {
-        guard let url = URL(string: "https://s3-us-west-2.amazonaws.com/youtubeassets/home.json") else { return }
+    private let baseURLString = "https://s3-us-west-2.amazonaws.com/youtubeassets"
+    
+    private func fetchVideos(from urlString: String, completion: @escaping ([Video]) -> Void) {
+        guard let url = URL(string: urlString) else { return }
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             if error != nil { print(error!.localizedDescription); return }
             guard data != nil else { return }
@@ -37,5 +39,19 @@ class ApiService: NSObject {
             }
             catch { print(error.localizedDescription) }
         }.resume()
+    }
+}
+
+extension ApiService {
+    func fetchHomeFeed(completion: @escaping ([Video]) -> Void) {
+        fetchVideos(from: baseURLString + "/home.json", completion: completion)
+    }
+    
+    func fetchTrendingFeed(completion: @escaping ([Video]) -> Void) {
+        fetchVideos(from: baseURLString + "/trending.json", completion: completion)
+    }
+    
+    func fetchSubscriptionsFeed(completion: @escaping ([Video]) -> Void) {
+        fetchVideos(from: baseURLString + "/subscriptions.json", completion: completion)
     }
 }

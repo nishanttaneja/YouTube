@@ -9,7 +9,7 @@ import UIKit
 
 class FeedCell: BaseCell {
     private let cellIdentifier = "cellId"
-    private lazy var collectionView: UICollectionView = {
+    lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collectionView.backgroundColor = .white
         collectionView.register(VideoCell.self, forCellWithReuseIdentifier: cellIdentifier)
@@ -19,7 +19,7 @@ class FeedCell: BaseCell {
         return collectionView
     }()
     
-    private var videos = [Video]()
+    var videos = [Video]()
     
     override func configureCell() {
         super.configureCell()
@@ -28,12 +28,9 @@ class FeedCell: BaseCell {
         addConstraints(withVisualFormat: "H:|[v0]|", views: collectionView)
         addConstraints(withVisualFormat: "V:|[v0]|", views: collectionView)
     }
-}
-
-//MARK:- ApiService
-extension FeedCell {
-    private func fetchVideos() {
-        ApiService.sharedInstance.fetchVideos { [weak self] videos in
+    
+    func fetchVideos() {
+        ApiService.sharedInstance.fetchHomeFeed { [weak self] videos in
             self?.videos = videos
             self?.collectionView.reloadData()
         }
@@ -43,7 +40,7 @@ extension FeedCell {
 //MARK:- UICollectionView
 extension FeedCell: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        4
+        videos.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
