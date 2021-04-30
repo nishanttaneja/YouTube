@@ -39,6 +39,7 @@ class FeedCell: BaseCell {
 
 //MARK:- UICollectionView
 extension FeedCell: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+    // DataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         videos.count
     }
@@ -51,8 +52,15 @@ extension FeedCell: UICollectionViewDataSource, UICollectionViewDelegate, UIColl
         return cell
     }
     
+    // DelegateFlowLayout
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let height = (frame.width - 32) * 9/16
         return CGSize(width: frame.width, height: height + 16 + 88)
+    }
+    
+    // Delegate
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let playerLauncher = PlayerLauncher()
+        playerLauncher.showVideoPlayer()
     }
 }
