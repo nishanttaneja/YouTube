@@ -7,9 +7,14 @@
 
 import Foundation
 
-class Video {
-    var title: String?
-    var thumbnailImageName: String?
-    var channel: Channel?
-    var numberOfViews: NSNumber?
+struct Video: Decodable {
+    let title: String?
+    let thumbnailImageName: String?
+    let channel: Channel?
+    let numberOfViews: Int?
+}
+
+struct Channel: Decodable {
+    let name: String?
+    let profileImageName: String?
 }
