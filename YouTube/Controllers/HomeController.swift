@@ -8,47 +8,15 @@
 import UIKit
 
 final class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+    private let titles = ["Home", "Trending", "Subscriptions", "Account"]
     private let cellIdentifier = "cellId"
-    
-    private var videos = [Video]()
-    
+        
     //MARK:- View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigationController()
         configureCollectionView()
         setupMenuBar()
-        fetchVideos()
-    }
-    
-    private func fetchVideos() {
-        guard let url = URL(string: "https://s3-us-west-2.amazonaws.com/youtubeassets/home.json") else { return }
-        URLSession.shared.dataTask(with: url) { [weak self] (data, response, error) in
-            guard let self = self else { return }
-            if error != nil { print(error!.localizedDescription); return }
-            guard data != nil else { return }
-            do {
-                let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers)
-                self.videos = []
-                for dictionary in json as! [[String : Any]] {
-                    let video = Video()
-                    video.title = dictionary["title"] as? String
-                    video.thumbnailImageName = dictionary["thumbnail_image_name"] as? String
-                    video.numberOfViews = dictionary["number_of_views"] as? NSNumber
-                    if let channelJSON = dictionary["channel"] as? [String : Any] {
-                        let channel = Channel()
-                        channel.name = channelJSON["name"] as? String
-                        channel.profileImageName = channelJSON["profile_image_name"] as? String
-                        video.channel = channel
-                    }
-                    self.videos.append(video)
-                }
-            }
-            catch { print(error.localizedDescription) }
-            DispatchQueue.main.async { [weak self] in
-                self?.collectionView.reloadData()
-            }
-        }.resume()
     }
     
     private func configureNavigationController() {
@@ -82,7 +50,7 @@ final class HomeController: UICollectionViewController, UICollectionViewDelegate
         }
         collectionView.isPagingEnabled = true
         collectionView.backgroundColor = .white
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellIdentifier)
+        collectionView.register(FeedCell.self, forCellWithReuseIdentifier: cellIdentifier)
         collectionView.contentInset = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
         collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
     }
@@ -112,17 +80,12 @@ final class HomeController: UICollectionViewController, UICollectionViewDelegate
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath)
-        let colors: [UIColor] = [.blue, .green, .red, .yellow]
-//        cell.video = videos[indexPath.item]
-        cell.backgroundColor = colors[indexPath.item]
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as! FeedCell
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        let height = (view.frame.width - 32) * 9/16
-//        return CGSize(width: view.frame.width, height: height + 16 + 88)
-        return CGSize(width: view.frame.width, height: view.frame.height)
+        CGSize(width: view.frame.width, height: view.frame.height - 50 - view.safeAreaInsets.bottom)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -134,8 +97,9 @@ final class HomeController: UICollectionViewController, UICollectionViewDelegate
     }
     
     override func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        let indexPath = IndexPath(item: Int(targetContentOffset.pointee.x/view.frame.width), section: 0)
-        menuBar.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+        let index = Int(targetContentOffset.pointee.x/view.frame.width)
+        menuBar.collectionView.selectItem(at: IndexPath(item: index, section: 0), animated: true, scrollPosition: [])
+        updateTitleForIndex(index)
     }
 }
 
@@ -144,6 +108,11 @@ extension HomeController {
         collectionView.isPagingEnabled = false
         collectionView.scrollToItem(at: IndexPath(item: index, section: 0), at: .centeredHorizontally, animated: true)
         collectionView.isPagingEnabled = true
+        updateTitleForIndex(index)
+    }
+    
+    func updateTitleForIndex(_ index: Int) {
+        navigationItem.leftBarButtonItem?.title = titles[index]
     }
 }
 

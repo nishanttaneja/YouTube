@@ -18,6 +18,8 @@
 		B452620E2625CF2C0021E5FC /* SettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B452620D2625CF2C0021E5FC /* SettingCell.swift */; };
 		B45262112625D2840021E5FC /* Setting.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45262102625D2840021E5FC /* Setting.swift */; };
 		B4A5DC942624D2D700D88B93 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4A5DC932624D2D700D88B93 /* Extensions.swift */; };
+		B4CD9A23263BF6E400666FF6 /* FeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4CD9A22263BF6E400666FF6 /* FeedCell.swift */; };
+		B4CD9A25263BF8C900666FF6 /* ApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4CD9A24263BF8C900666FF6 /* ApiService.swift */; };
 		B4E222FA2620CA5900EF707E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E222F92620CA5900EF707E /* AppDelegate.swift */; };
 		B4E222FC2620CA5900EF707E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E222FB2620CA5900EF707E /* SceneDelegate.swift */; };
 		B4E223032620CA5B00EF707E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B4E223022620CA5B00EF707E /* Assets.xcassets */; };
@@ -38,6 +40,8 @@
 		B452620D2625CF2C0021E5FC /* SettingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCell.swift; sourceTree = "<group>"; };
 		B45262102625D2840021E5FC /* Setting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Setting.swift; sourceTree = "<group>"; };
 		B4A5DC932624D2D700D88B93 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		B4CD9A22263BF6E400666FF6 /* FeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCell.swift; sourceTree = "<group>"; };
+		B4CD9A24263BF8C900666FF6 /* ApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiService.swift; sourceTree = "<group>"; };
 		B4E222F62620CA5900EF707E /* YouTube.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YouTube.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4E222F92620CA5900EF707E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B4E222FB2620CA5900EF707E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -83,6 +87,7 @@
 			children = (
 				B41401E226256F5900F3B3BB /* BaseCell.swift */,
 				B4E223142620CC8500EF707E /* VideoCell.swift */,
+				B4CD9A22263BF6E400666FF6 /* FeedCell.swift */,
 				B41401E62625726600F3B3BB /* MenuCell.swift */,
 				B452620D2625CF2C0021E5FC /* SettingCell.swift */,
 				B41401DF26256C0600F3B3BB /* MenuBar.swift */,
@@ -97,6 +102,14 @@
 				B4A5DC932624D2D700D88B93 /* Extensions.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		B4CD9A26263BF8CD00666FF6 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				B4CD9A24263BF8C900666FF6 /* ApiService.swift */,
+			);
+			path = Service;
 			sourceTree = "<group>";
 		};
 		B4E222ED2620CA5900EF707E = {
@@ -121,6 +134,7 @@
 			children = (
 				B4E222F92620CA5900EF707E /* AppDelegate.swift */,
 				B4E222FB2620CA5900EF707E /* SceneDelegate.swift */,
+				B4CD9A26263BF8CD00666FF6 /* Service */,
 				B41401E92625856400F3B3BB /* Models */,
 				B4A5DC912624D2C700D88B93 /* Views */,
 				B4A5DC902624D2BA00D88B93 /* Controllers */,
@@ -208,11 +222,13 @@
 				B41401E026256C0600F3B3BB /* MenuBar.swift in Sources */,
 				B45262112625D2840021E5FC /* Setting.swift in Sources */,
 				B45262082625B3440021E5FC /* ImageView.swift in Sources */,
+				B4CD9A25263BF8C900666FF6 /* ApiService.swift in Sources */,
 				B4E223152620CC8500EF707E /* VideoCell.swift in Sources */,
 				B41401EB2625857000F3B3BB /* Video.swift in Sources */,
 				B452620E2625CF2C0021E5FC /* SettingCell.swift in Sources */,
 				B41401E326256F5900F3B3BB /* BaseCell.swift in Sources */,
 				B452620B2625C2550021E5FC /* SettingsLauncher.swift in Sources */,
+				B4CD9A23263BF6E400666FF6 /* FeedCell.swift in Sources */,
 				B4E222FC2620CA5900EF707E /* SceneDelegate.swift in Sources */,
 				B41401E72625726600F3B3BB /* MenuCell.swift in Sources */,
 				B4E223122620CC2100EF707E /* HomeController.swift in Sources */,
