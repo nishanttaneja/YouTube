@@ -12,6 +12,7 @@ class VideoPlayerView: UIView {
     private var player: AVPlayer?
     private var isPlaying: Bool = false
     
+    // Views
     private lazy var controlsContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = .init(white: 0, alpha: 0.5)
@@ -34,6 +35,27 @@ class VideoPlayerView: UIView {
         return button
     }()
     
+    private let videoDurationLabel: UILabel = {
+        let label = UILabel()
+        label.text = "00:00"
+        label.textColor = .white
+        label.font = .systemFont(ofSize: 14)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let videoSlider: UISlider = {
+        let slider = UISlider()
+        slider.translatesAutoresizingMaskIntoConstraints = false
+        slider.minimumTrackTintColor = .red
+        slider.maximumTrackTintColor = .white
+        slider.thumbTintColor = .red
+        slider.addTarget(self, action: #selector(handleSliderValueChange), for: .valueChanged)
+        return slider
+    }()
+    
+    // Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .black
@@ -47,26 +69,6 @@ class VideoPlayerView: UIView {
 }
 
 extension VideoPlayerView {
-    private func configurePlayerView() {
-        let urlString = "https://reflexioncdn.azureedge.net/contentdata/MEDIA/296/Proxy_Video/296_854x480.mp4"
-        if let url = URL(string: urlString) {
-            player = AVPlayer(url: url)
-            let playerLayer = AVPlayerLayer(player: player)
-            self.layer.addSublayer(playerLayer)
-            playerLayer.frame = self.frame
-            player?.addObserver(self, forKeyPath: "currentItem.loadedTimeRanges", options: .new, context: nil)
-            player?.play()
-        }
-    }
-    
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if keyPath == "currentItem.loadedTimeRanges" {
-            activityIndicatorView.stopAnimating()
-            isPlaying = true
-            playPauseButton.isHidden = false
-        }
-    }
-    
     private func configureControlsContainerView() {
         controlsContainerView.frame = frame
         addSubview(controlsContainerView)
@@ -86,8 +88,36 @@ extension VideoPlayerView {
             playPauseButton.widthAnchor.constraint(equalToConstant: 50),
             playPauseButton.heightAnchor.constraint(equalToConstant: 50)
         ])
+        // VideoDuration Label
+        controlsContainerView.addSubview(videoDurationLabel)
+        controlsContainerView.addSubview(videoSlider)
+        NSLayoutConstraint.activate([
+            videoDurationLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -8),
+            videoDurationLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
+            videoDurationLabel.widthAnchor.constraint(equalToConstant: 48),
+            videoDurationLabel.heightAnchor.constraint(equalToConstant: 24),
+            // Video Slider
+            videoSlider.leftAnchor.constraint(equalTo: leftAnchor),
+            videoSlider.rightAnchor.constraint(equalTo: videoDurationLabel.leftAnchor),
+            videoSlider.bottomAnchor.constraint(equalTo: bottomAnchor),
+            videoSlider.heightAnchor.constraint(equalToConstant: 24)
+        ])
     }
     
+    private func configurePlayerView() {
+        let urlString = "https://reflexioncdn.azureedge.net/contentdata/MEDIA/296/Proxy_Video/296_854x480.mp4"
+        if let url = URL(string: urlString) {
+            player = AVPlayer(url: url)
+            let playerLayer = AVPlayerLayer(player: player)
+            self.layer.addSublayer(playerLayer)
+            playerLayer.frame = self.frame
+            player?.addObserver(self, forKeyPath: "currentItem.loadedTimeRanges", options: .new, context: nil)
+            player?.play()
+        }
+    }
+}
+ 
+extension VideoPlayerView {
     @objc func handlePlayPause() {
         if isPlaying {
             player?.pause()
@@ -97,5 +127,28 @@ extension VideoPlayerView {
             playPauseButton.setImage(UIImage(named: "pause"), for: .normal)
         }
         isPlaying = !isPlaying
+    }
+    
+    @objc func handleSliderValueChange() {
+        if let durationInSeconds = player?.currentItem?.duration.seconds {
+            let seekTime = CMTime(seconds: durationInSeconds * Double(videoSlider.value), preferredTimescale: 1)
+            player?.seek(to: seekTime)
+        }
+    }
+}
+
+extension VideoPlayerView {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == "currentItem.loadedTimeRanges" {
+            activityIndicatorView.stopAnimating()
+            controlsContainerView.backgroundColor = .clear
+            isPlaying = true
+            playPauseButton.isHidden = false
+            if let durationInSeconds = player?.currentItem?.duration.seconds {
+                let seconds = Int(durationInSeconds.truncatingRemainder(dividingBy: 60))
+                let minutes = Int(durationInSeconds / 60)
+                videoDurationLabel.text = "\(minutes):\(seconds)"
+            }
+        }
     }
 }
