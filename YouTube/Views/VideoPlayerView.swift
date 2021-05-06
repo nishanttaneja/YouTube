@@ -123,24 +123,25 @@ extension VideoPlayerView {
     }
     
     private func configurePlayerView() {
-        let urlString = "https://reflexioncdn.azureedge.net/contentdata/MEDIA/296/Proxy_Video/296_854x480.mp4"
-        if let url = URL(string: urlString) {
-            player = AVPlayer(url: url)
-            let playerLayer = AVPlayerLayer(player: player)
-            self.layer.addSublayer(playerLayer)
-            playerLayer.frame = self.frame
-            player?.play()
-            player?.addObserver(self, forKeyPath: "currentItem.loadedTimeRanges", options: .new, context: nil)
-            player?.addPeriodicTimeObserver(forInterval: .init(value: 1, timescale: 2), queue: .main, using: { time in
-                let secondsInDouble = time.seconds.truncatingRemainder(dividingBy: 60)
-                let seconds = String(format: "%02i", Int(secondsInDouble > 0 ? secondsInDouble : 0))
-                let minutes = String(format: "%02i", Int(time.seconds / 60))
-                self.videoTimeLabel.text = "\(minutes):\(seconds)"
-                if let durationInSeconds = self.player?.currentItem?.duration.seconds {
-                    self.videoSlider.value = Float(time.seconds / durationInSeconds)
-                }
-            })
+        let urlString = ""
+        guard urlString != "", let url = URL(string: urlString) else {
+            fatalError("URL for a video file is required")
         }
+        player = AVPlayer(url: url)
+        let playerLayer = AVPlayerLayer(player: player)
+        self.layer.addSublayer(playerLayer)
+        playerLayer.frame = self.frame
+        player?.play()
+        player?.addObserver(self, forKeyPath: "currentItem.loadedTimeRanges", options: .new, context: nil)
+        player?.addPeriodicTimeObserver(forInterval: .init(value: 1, timescale: 2), queue: .main, using: { time in
+            let secondsInDouble = time.seconds.truncatingRemainder(dividingBy: 60)
+            let seconds = String(format: "%02i", Int(secondsInDouble > 0 ? secondsInDouble : 0))
+            let minutes = String(format: "%02i", Int(time.seconds / 60))
+            self.videoTimeLabel.text = "\(minutes):\(seconds)"
+            if let durationInSeconds = self.player?.currentItem?.duration.seconds {
+                self.videoSlider.value = Float(time.seconds / durationInSeconds)
+            }
+        })
     }
 }
 
