@@ -123,11 +123,12 @@ extension VideoPlayerView {
     }
     
     private func configurePlayerView() {
-        let urlString = ""
+        let urlString = "http://sample.vodobox.com/planete_interdite/planete_interdite_alternate.m3u8"
         guard urlString != "", let url = URL(string: urlString) else {
             fatalError("URL for a video file is required")
         }
         player = AVPlayer(url: url)
+        loadMedia(withLocale: "fr")
         let playerLayer = AVPlayerLayer(player: player)
         self.layer.addSublayer(playerLayer)
         playerLayer.frame = self.frame
@@ -188,6 +189,66 @@ extension VideoPlayerView {
                     let seconds = String(format: "%02i", Int(secondsInDouble))
                     let minutes = String(format: "%02i", Int(durationInSeconds / 60))
                     videoDurationLabel.text = "\(minutes):\(seconds)"
+                }
+            }
+        }
+    }
+}
+
+
+// MARK: - HLS Support
+enum MediaError: Error {
+    case assetNotFound
+    case mediaSelectionOptionsNotFound
+}
+extension VideoPlayerView {
+    private func loadMediaSelectionGroup(for mediaCharacteristic: AVMediaCharacteristic, completionHandler: @escaping (_ result: Result<AVMediaSelectionGroup, MediaError>) -> Void) {
+        guard let asset = player?.currentItem?.asset else {
+            completionHandler(.failure(.assetNotFound))
+            return
+        }
+        if #available(iOS 16, *) {
+            asset.loadMediaSelectionGroup(for: mediaCharacteristic) { group, error in
+                guard let group, error == nil else {
+                    completionHandler(.failure(.mediaSelectionOptionsNotFound))
+                    return
+                }
+                completionHandler(.success(group))
+            }
+        } else {
+            guard let group = asset.mediaSelectionGroup(forMediaCharacteristic: mediaCharacteristic) else {
+                completionHandler(.failure(.mediaSelectionOptionsNotFound))
+                return
+            }
+            completionHandler(.success(group))
+        }
+    }
+    private func loadMedia(withLocale identifier: String) {
+        loadMediaSelectionGroup(for: .audible) { result in
+            switch result {
+            case .failure(let error):
+                debugPrint(error.localizedDescription)
+            case .success(let group):
+                guard let frenchOption = group.options.first(where: { $0.locale?.languageCode == identifier }) else {
+                    debugPrint("option for specified identifier not found: \(identifier)")
+                    return
+                }
+                DispatchQueue.main.async {
+                    self.player?.currentItem?.select(frenchOption, in: group)
+                }
+            }
+        }
+        loadMediaSelectionGroup(for: .legible) { result in
+            switch result {
+            case .failure(let error):
+                debugPrint(error.localizedDescription)
+            case .success(let group):
+                guard let frenchOption = group.options.first(where: { $0.locale?.languageCode == identifier }) else {
+                    debugPrint("option for specified identifier not found: \(identifier)")
+                    return
+                }
+                DispatchQueue.main.async {
+                    self.player?.currentItem?.select(frenchOption, in: group)
                 }
             }
         }
